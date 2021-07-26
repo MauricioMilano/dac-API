@@ -1,9 +1,11 @@
 package com.mauriciomilano.APIdac.Models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mauriciomilano.APIdac.Enums.Idioma;
 
 import javax.persistence.*;
 import java.sql.Array;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -36,13 +38,13 @@ public class Artigo {
     private List<Autor> autores;
     @ManyToOne
     private Volume volume;
-
     protected Artigo(){}
 
     public Artigo(long id, String idioma, String titulo, String titulo_en, String resumo, String resumo_en, String palavras_chave, String palavras_chave_en, int num_paginas, List<Autor> autores) {
         this.id = id;
         this.idioma = idioma;
         this.titulo = titulo;
+        validaIdioma(idioma);
         validaTamanhoString(titulo,"Titulo", 256);
         validaTamanhoString(titulo_en,"Titulo", 256);
         validaTamanhoString(resumo,"Resumo", 256);
@@ -61,6 +63,13 @@ public class Artigo {
     public void validaTamanhoString(String str, String tipo, Integer tamanho){
         if(str.length()>tamanho){
             throw new Error(tipo + " com tamanho inválido");
+        }
+    }
+    public void validaIdioma(String idioma){
+        String[] idiomas = new String[]{Idioma.ingles, Idioma.espanhol, Idioma.portugues};
+        List<String> list = Arrays.asList(idiomas);
+        if(!list.contains(idioma.toLowerCase())){
+            throw new Error("Idioma inválido");
         }
     }
 
